@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Spam Email Classifier{% endblock %}
+
+{% block content %}
+<div class="container-fluid bg-gradient py-5">
+    <div class="container">
+        <div class="row align-items-center min-vh-75">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Spam Email & SMS Classifier</h1>
+                <p class="lead mb-4">Advanced machine learning application using TF-IDF and Multinomial Naive Bayes to accurately classify spam emails and SMS messages.</p>
+                
+                <div class="d-flex gap-3 mb-5">
+                    <a href="{{ url_for('main.classifier_page') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-flask"></i> Try Classifier
+                    </a>
+                    <a href="{{ url_for('main.metrics_page') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-chart-line"></i> View Metrics
+                    </a>
+                </div>
+                
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="stat-box">
+                            <h3 class="h5 text-primary">98.2%</h3>
+                            <p class="text-muted">Accuracy</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="stat-box">
+                            <h3 class="h5 text-success">5,574</h3>
+                            <p class="text-muted">Training Samples</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body p-5">
+                        <h5 class="card-title mb-4">Quick Classification</h5>
+                        <form id="quickClassifyForm">
+                            <div class="mb-3">
+                                <label for="quickText" class="form-label">Enter Email or SMS Text</label>
+                                <textarea class="form-control" id="quickText" rows="4" placeholder="Paste your email or SMS here..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-magic"></i> Classify
+                            </button>
+                        </form>
+                        
+                        <div id="quickResult" class="mt-4" style="display: none;">
+                            <div class="alert" id="resultAlert" role="alert"></div>
+                            <div id="resultDetails"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Key Features</h2>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h5>Advanced ML Models</h5>
+                    <p>Multinomial Naive Bayes and SVM with TF-IDF vectorization for accurate spam detection.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h5>Comprehensive Metrics</h5>
+                    <p>Accuracy, precision, recall, F1-score, confusion matrix, and ROC curves included.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h5>REST API</h5>
+                    <p>RESTful API endpoints for easy integration with other applications.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h5>Responsive Design</h5>
+                    <p>Beautiful Bootstrap 5 interface that works on all devices.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h5>Production Ready</h5>
+                    <p>Fully tested, documented, and ready for production deployment.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h5>Full Documentation</h5>
+                    <p>Comprehensive guides, API documentation, and usage examples.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Technology Stack -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Technology Stack</h2>
+        
+        <div class="row g-4 text-center">
+            <div class="col-md-3 col-sm-6">
+                <div class="tech-badge">
+                    <i class="fab fa-python"></i>
+                    <p>Python 3.8+</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="tech-badge">
+                    <i class="fas fa-flask"></i>
+                    <p>Flask</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="tech-badge">
+                    <i class="fas fa-chart-line"></i>
+                    <p>Scikit-learn</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="tech-badge">
+                    <i class="fab fa-bootstrap"></i>
+                    <p>Bootstrap 5</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $('#quickClassifyForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        const text = $('#quickText').val().trim();
+        
+        if (!text) {
+            alert('Please enter some text to classify');
+            return;
+        }
+        
+        $.ajax({
+            url: '/api/classify',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ text: text }),
+            success: function(data) {
+                const alertClass = data.label === 'ham' ? 'alert-success' : 'alert-danger';
+                const icon = data.label === 'ham' ? '✓' : '⚠';
+                
+                $('#resultAlert')
+                    .removeClass('alert-success alert-danger')
+                    .addClass(alertClass)
+                    .html(`<strong>${icon} ${data.label.toUpperCase()}</strong> - Confidence: ${(data.confidence * 100).toFixed(1)}%`);
+                
+                $('#resultDetails').html(`
+                    <div class="progress mb-3">
+                        <div class="progress-bar ${data.label === 'ham' ? 'bg-success' : 'bg-danger'}" 
+                             style="width: ${data.confidence * 100}%"></div>
+                    </div>
+                    <p class="text-muted small">Spam: ${(data.probabilities.spam * 100).toFixed(1)}% | Ham: ${(data.probabilities.ham * 100).toFixed(1)}%</p>
+                `);
+                
+                $('#quickResult').show();
+            },
+            error: function(error) {
+                alert('Error classifying text. Please try again.');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

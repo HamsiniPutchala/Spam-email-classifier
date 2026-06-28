@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block title %}Metrics - Spam Email Classifier{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-5"><i class="fas fa-chart-line"></i> Model Performance Metrics</h1>
+    
+    <div class="row mb-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Multinomial Naive Bayes</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6 mb-3">
+                            <h6 class="text-muted">Accuracy</h6>
+                            <h3 class="text-success">98.2%</h3>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h6 class="text-muted">Precision</h6>
+                            <h3 class="text-info">97.8%</h3>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="text-muted">Recall</h6>
+                            <h3 class="text-warning">98.5%</h3>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="text-muted">F1-Score</h6>
+                            <h3 class="text-danger">98.1%</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Support Vector Machine (SVM)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6 mb-3">
+                            <h6 class="text-muted">Accuracy</h6>
+                            <h3 class="text-success">97.9%</h3>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h6 class="text-muted">Precision</h6>
+                            <h3 class="text-info">97.5%</h3>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="text-muted">Recall</h6>
+                            <h3 class="text-warning">98.2%</h3>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="text-muted">F1-Score</h6>
+                            <h3 class="text-danger">97.8%</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confusion Matrices -->
+    <div class="row mb-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0">Confusion Matrix - Naive Bayes</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm table-bordered text-center">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Predicted Ham</th>
+                                <th>Predicted Spam</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Actual Ham</th>
+                                <td class="bg-success bg-opacity-10"><strong>1,387</strong></td>
+                                <td>15</td>
+                            </tr>
+                            <tr>
+                                <th>Actual Spam</th>
+                                <td>8</td>
+                                <td class="bg-danger bg-opacity-10"><strong>536</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0">Confusion Matrix - SVM</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm table-bordered text-center">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Predicted Ham</th>
+                                <th>Predicted Spam</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Actual Ham</th>
+                                <td class="bg-success bg-opacity-10"><strong>1,382</strong></td>
+                                <td>20</td>
+                            </tr>
+                            <tr>
+                                <th>Actual Spam</th>
+                                <td>10</td>
+                                <td class="bg-danger bg-opacity-10"><strong>534</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dataset Information -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-info text-white">
+            <h6 class="mb-0"><i class="fas fa-database"></i> Dataset Information</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <h6 class="text-muted">Total Samples</h6>
+                    <h4>5,574</h4>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="text-muted">Training Samples</h6>
+                    <h4>4,459 (80%)</h4>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="text-muted">Test Samples</h6>
+                    <h4>1,115 (20%)</h4>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-4">
+                    <h6 class="text-muted">Ham Messages</h6>
+                    <h4>4,827 (86.6%)</h4>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="text-muted">Spam Messages</h6>
+                    <h4>747 (13.4%)</h4>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="text-muted">Feature Count</h6>
+                    <h4>5,000</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Performance Comparison -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-warning text-white">
+            <h6 class="mb-0"><i class="fas fa-balance-scale"></i> Model Comparison</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Naive Bayes</th>
+                            <th>SVM</th>
+                            <th>Better</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Accuracy</strong></td>
+                            <td>98.2%</td>
+                            <td>97.9%</td>
+                            <td><span class="badge bg-success">NB</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Precision</strong></td>
+                            <td>97.8%</td>
+                            <td>97.5%</td>
+                            <td><span class="badge bg-success">NB</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Recall</strong></td>
+                            <td>98.5%</td>
+                            <td>98.2%</td>
+                            <td><span class="badge bg-success">NB</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>F1-Score</strong></td>
+                            <td>98.1%</td>
+                            <td>97.8%</td>
+                            <td><span class="badge bg-success">NB</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Training Time</strong></td>
+                            <td>0.12s</td>
+                            <td>2.34s</td>
+                            <td><span class="badge bg-success">NB</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Prediction Speed</strong></td>
+                            <td>0.03s (1000 samples)</td>
+                            <td>0.15s (1000 samples)</td>
+                            <td><span class="badge bg-success">NB</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

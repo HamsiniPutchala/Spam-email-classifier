@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}Classifier - Spam Email Classifier{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-flask"></i> Email/SMS Classifier</h5>
+                </div>
+                <div class="card-body">
+                    <form id="classifierForm">
+                        <div class="mb-3">
+                            <label for="messageText" class="form-label">Enter Email or SMS Text</label>
+                            <textarea class="form-control" id="messageText" rows="6" placeholder="Paste your email or SMS message here..." required></textarea>
+                            <small class="text-muted">Maximum 10,000 characters</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="modelSelect" class="form-label">Select Model</label>
+                            <select class="form-select" id="modelSelect">
+                                <option value="naive_bayes" selected>Multinomial Naive Bayes</option>
+                                <option value="svm">Support Vector Machine (SVM)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check"></i> Classify
+                            </button>
+                            <button type="reset" class="btn btn-secondary">
+                                <i class="fas fa-redo"></i> Clear
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div id="loadingSpinner" style="display: none;" class="mt-3">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <span class="ms-2">Classifying...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results -->
+            <div id="resultsSection" style="display: none;">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fas fa-result"></i> Classification Results</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Prediction</h6>
+                                <h4 id="predictionLabel" class="mb-0"></h4>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Confidence</h6>
+                                <h4 id="confidenceScore" class="mb-0"></h4>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h6 class="text-muted">Confidence Distribution</h6>
+                            <div class="progress" style="height: 25px;">
+                                <div id="hamProgress" class="progress-bar bg-success" role="progressbar" style="width: 0%">Ham</div>
+                                <div id="spamProgress" class="progress-bar bg-danger" role="progressbar" style="width: 0%">Spam</div>
+                            </div>
+                        </div>
+                        
+                        <div id="detailedResults" class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Class</th>
+                                        <th>Probability</th>
+                                        <th>Percentage</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="probabilitiesTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Model Info -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0"><i class="fas fa-info-circle"></i> Model Information</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="text-muted">Multinomial Naive Bayes</h6>
+                        <p class="mb-1"><small><strong>Accuracy:</strong> 98.2%</small></p>
+                        <p class="mb-1"><small><strong>Precision:</strong> 97.8%</small></p>
+                        <p class="mb-0"><small><strong>F1-Score:</strong> 98.1%</small></p>
+                    </div>
+                    <hr>
+                    <div>
+                        <h6 class="text-muted">Support Vector Machine</h6>
+                        <p class="mb-1"><small><strong>Accuracy:</strong> 97.9%</small></p>
+                        <p class="mb-1"><small><strong>Precision:</strong> 97.5%</small></p>
+                        <p class="mb-0"><small><strong>F1-Score:</strong> 97.8%</small></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Examples -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-white">
+                    <h6 class="mb-0"><i class="fas fa-lightbulb"></i> Example Inputs</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="text-success"><small>Ham Example</small></h6>
+                        <p class="small mb-0">"Hi, I just wanted to check if we're still on for the meeting tomorrow at 10 AM?"</p>
+                    </div>
+                    <hr>
+                    <div>
+                        <h6 class="text-danger"><small>Spam Example</small></h6>
+                        <p class="small mb-0">"Click here NOW to claim your FREE prize! Limited time offer!!!"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $('#classifierForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        const text = $('#messageText').val().trim();
+        const model = $('#modelSelect').val();
+        
+        if (!text) {
+            alert('Please enter text to classify');
+            return;
+        }
+        
+        // Show loading spinner
+        $('#loadingSpinner').show();
+        $('#resultsSection').hide();
+        
+        $.ajax({
+            url: '/api/classify',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ 
+                text: text,
+                model: model
+            }),
+            success: function(data) {
+                displayResults(data);
+            },
+            error: function(error) {
+                alert('Error classifying text. Please try again.');
+                console.error(error);
+            },
+            complete: function() {
+                $('#loadingSpinner').hide();
+            }
+        });
+    });
+    
+    function displayResults(data) {
+        const isHam = data.label === 'ham';
+        const labelColor = isHam ? 'text-success' : 'text-danger';
+        const labelIcon = isHam ? '✓' : '⚠';
+        
+        // Update prediction
+        $('#predictionLabel').html(`<span class="${labelColor}">${labelIcon} ${data.label.toUpperCase()}</span>`);
+        $('#confidenceScore').html(`${(data.confidence * 100).toFixed(2)}%`);
+        
+        // Update progress bars
+        const hamPercent = (data.probabilities.ham * 100).toFixed(1);
+        const spamPercent = (data.probabilities.spam * 100).toFixed(1);
+        
+        $('#hamProgress')
+            .css('width', hamPercent + '%')
+            .text('Ham: ' + hamPercent + '%');
+        $('#spamProgress')
+            .css('width', spamPercent + '%')
+            .text('Spam: ' + spamPercent + '%');
+        
+        // Update table
+        let tableHTML = `
+            <tr>
+                <td><span class="badge bg-success">Ham</span></td>
+                <td>${data.probabilities.ham.toFixed(4)}</td>
+                <td>${(data.probabilities.ham * 100).toFixed(2)}%</td>
+            </tr>
+            <tr>
+                <td><span class="badge bg-danger">Spam</span></td>
+                <td>${data.probabilities.spam.toFixed(4)}</td>
+                <td>${(data.probabilities.spam * 100).toFixed(2)}%</td>
+            </tr>
+        `;
+        $('#probabilitiesTable').html(tableHTML);
+        
+        // Show results
+        $('#resultsSection').show();
+        $('html, body').animate({ scrollTop: $('#resultsSection').offset().top - 100 }, 'slow');
+    }
+});
+</script>
+{% endblock %}
