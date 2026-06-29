@@ -412,38 +412,6 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) file for
 
 **Hamsini Putchala**
 - GitHub: [@HamsiniPutchala](https://github.com/HamsiniPutchala)
-- Email: hamsini.putchala@example.com
 
-## Acknowledgments
 
-- Dataset sources: UCI Machine Learning Repository
-- Scikit-learn documentation and examples
-- Flask and Bootstrap communities
-- Open-source ML community
 
-## Citation
-
-If you use this project in your research, please cite:
-
-```bibtex
-@software{putchala2024spam,
-  title={Spam Email Classifier: Production-Ready ML Application},
-  author={Putchala, Hamsini},
-  year={2024},
-  url={https://github.com/HamsiniPutchala/Spam-Email-Classifier}
-}
-```
-
-## Support
-
-For issues, feature requests, or questions:
-
-- **GitHub Issues**: [Create an issue](https://github.com/HamsiniPutchala/Spam-Email-Classifier/issues)
-- **Documentation**: Check [docs/](docs/) directory
-- **Email**: hamsini.putchala@example.com
-
----
-
-**Last Updated**: 2024-06-28
-**Version**: 1.0.0
-**Status**: Production Ready ✓
